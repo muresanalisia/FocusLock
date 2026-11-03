@@ -265,7 +265,6 @@ private fun RuleCard(rule: Prefs.AppRule, onEdit: () -> Unit, onRemove: () -> Un
     val day = Prefs.dayKey(ctx)
     val usedMin = Prefs.getUsageSecs(ctx, day, rule.pkg) / 60
     val extraMin = Prefs.getExtraSecs(ctx, day, rule.pkg) / 60
-    val noLimit = Prefs.isNoLimitToday(ctx, rule.pkg)
 
     Card(modifier = Modifier
         .fillMaxWidth()
@@ -274,7 +273,6 @@ private fun RuleCard(rule: Prefs.AppRule, onEdit: () -> Unit, onRemove: () -> Un
             Text(appLabel(ctx, rule.pkg), fontWeight = FontWeight.SemiBold, fontSize = 17.sp)
             Text(
                 when {
-                    noLimit -> "No limit today (you lifted it)"
                     extraMin > 0 -> "Used $usedMin of ${rule.limitMin} min (+$extraMin extra) today"
                     else -> "Used $usedMin of ${rule.limitMin} min today"
                 },

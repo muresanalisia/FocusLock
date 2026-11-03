@@ -82,7 +82,6 @@ class MonitorService : Service() {
         if (overlayView != null && fg != lockedPkg) hideOverlay()
 
         if (fg == null || rule == null) return
-        if (Prefs.isNoLimitToday(this, fg)) return
 
         Prefs.addUsage(this, fg, (tickMs / 1000).toInt())
 
@@ -230,13 +229,10 @@ class MonitorService : Service() {
         )
         reasons.forEach { reason ->
             column.addView(bigButton(reason, "#37474F") {
-                renderPuzzleStage(column, rule, label, liftLimit = false)
+                renderPuzzleStage(column, rule, label)
             })
         }
 
-        column.addView(bigButton("No limit for this app today", "#6D4C41") {
-            renderPuzzleStage(column, rule, label, liftLimit = true)
-        })
         column.addView(bigButton("Close the app", "#263238") {
             goHome()
             hideOverlay()
@@ -248,17 +244,13 @@ class MonitorService : Service() {
         column: LinearLayout,
         rule: Prefs.AppRule,
         label: String,
-        liftLimit: Boolean,
         retry: Boolean = false
     ) {
         column.removeAllViews()
         val puzzle = PuzzleFactory.next()
         column.addView(title(if (retry) "Not quite — try this one" else "Quick puzzle first"))
         column.addView(
-            subtitle(
-                if (liftLimit) "Solve it to lift the limit for today."
-                else "Solve it to add ${rule.extensionMin} more minutes."
-            )
+            subtitle("Solve it to add ${rule.extensionMin} more minutes.")
         )
         column.addView(TextView(this).apply {
             text = puzzle.question
@@ -271,15 +263,11 @@ class MonitorService : Service() {
         puzzle.options.forEach { option ->
             column.addView(bigButton(option.toString(), "#37474F") {
                 if (option == puzzle.answer) {
-                    if (liftLimit) {
-                        Prefs.setNoLimitToday(this, rule.pkg)
-                    } else {
-                        Prefs.addExtra(this, rule.pkg, rule.extensionMin * 60)
-                        Prefs.clearWarned(this, rule.pkg)
-                    }
+                    Prefs.addExtra(this, rule.pkg, rule.extensionMin * 60)
+                    Prefs.clearWarned(this, rule.pkg)
                     hideOverlay()
                 } else {
-                    renderPuzzleStage(column, rule, label, liftLimit, retry = true)
+                    renderPuzzleStage(column, rule, label, retry = true)
                 }
             })
         }

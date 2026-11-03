@@ -30,7 +30,6 @@ Both are normal for screen-time apps. After that:
 - At 0 → lock screen appears over the app
 - To continue: pick what you're doing (e.g. "Searching for something specific") → solve a quick puzzle → your extension minutes are added
 - Repeat as many times as you honestly need
-- Or pick "No limit for this app today" (also puzzle-gated) to lift the limit until the next reset
 - **Stats** shows your last 7 days per app
 
 ## Good to know

@@ -12,7 +12,7 @@ import java.time.LocalDateTime
  * - rules: which apps are limited, their daily limit and per-extension minutes
  * - usage: seconds spent per app per "day" (a day starts at the custom reset time)
  * - extra: extension seconds granted today per app
- * - warned / noLimit: per-day flags
+ * - warned: per-day flag
  */
 object Prefs {
 
@@ -128,12 +128,4 @@ object Prefs {
 
     fun isWarned(c: Context, pkg: String): Boolean =
         getSet(c, "warned").contains(flagKey(c, pkg))
-
-    fun setNoLimitToday(c: Context, pkg: String) {
-        val s = getSet(c, "noLimit"); s.add(flagKey(c, pkg))
-        sp(c).edit().putStringSet("noLimit", s).apply()
-    }
-
-    fun isNoLimitToday(c: Context, pkg: String): Boolean =
-        getSet(c, "noLimit").contains(flagKey(c, pkg))
 }
